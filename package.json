@@ -1,0 +1,19 @@
+{
+  "name": "quikpay",
+  "version": "1.0.0",
+  "description": "An easy-to-use platform for safe cash transfers.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Payment"
+  ],
+  "author": "Harshawardhan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.3",
+    "mongoose": "^8.2.1",
+    "zod": "^3.22.4"
+  }
+}
