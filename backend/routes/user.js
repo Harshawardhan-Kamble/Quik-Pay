@@ -1,5 +1,5 @@
 const { User } = require("../db/db")
-const { signupData } = require("../utils/types")
+const { signupData, signinData } = require("../utils/types")
 const { hashedPwd, matchPassword } = require("../utils/pwdUtils")
 
 const {Router} =require("express")
@@ -39,7 +39,15 @@ router.post("/signup",async(req,res)=>{
     }
 })
 router.post("/signin",async(req,res)=>{
-    const {email,password}=req.body
+    const createPayload=req.body
+    const parsePayload=signinData.safeParse(createPayload)
+    if(!parsePayload.success){
+        res.status(411).json({
+            msg:"You have entered wrong input"
+        })
+        return
+    }
+    const {email,password}=createPayload
     const existingUser=await User.findOne({
         email
     })
