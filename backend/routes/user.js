@@ -1,9 +1,10 @@
 const { User } = require("../db/db")
-const { signupData, signinData } = require("../utils/types")
+const { signupData, signinData, updateData } = require("../utils/types")
 const { hashedPwd, matchPassword } = require("../utils/pwdUtils")
 
 const {Router} =require("express")
 const { generateToken } = require("../utils/jwtUtlis")
+const authMiddleware = require("../middlewares/middleware")
 const router=Router()
 router.post("/signup",async(req,res)=>{
     const createPayload=req.body
@@ -45,7 +46,6 @@ router.post("/signin",async(req,res)=>{
         res.status(411).json({
             msg:"You have entered wrong input"
         })
-        return
     }
     const {email,password}=createPayload
     const existingUser=await User.findOne({
@@ -70,6 +70,31 @@ router.post("/signin",async(req,res)=>{
     else {
         res.status(411).json({
             msg:"Invalid Password"
+        })
+    }
+})
+router.put("/",authMiddleware,async(req,res)=>{
+    const parsePayload=updateData.safeParse(req.body)
+    if(!parsePayload.success){
+        res.status(411).json({
+            msg:"Something went wrong while updating"
+        })
+    }
+    if(parsePayload.data.password){
+        const updatedPassword=await hashedPwd(parsePayload.data.password)
+        parsePayload.data.password=updatedPassword
+    }
+    const existingUser=await User.findOne({
+        _id:req.userId
+    }) 
+
+    if(existingUser){
+        await User.updateOne(
+            { _id: req.userId },
+            parsePayload.data
+          );
+        res.json({
+            msg:"User detail updated Successfully"
         })
     }
 })

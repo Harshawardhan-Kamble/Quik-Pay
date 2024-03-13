@@ -9,7 +9,13 @@ const signinData=zod.object({
     password:zod.string(),
     email:zod.string().email()
 })
+const updateData=zod.object({
+    firstName:zod.string().optional(),
+    lastName:zod.string().optional(),
+    password:zod.string().optional(),
+})
 module.exports={
     signupData,
-    signinData
+    signinData,
+    updateData
 }
