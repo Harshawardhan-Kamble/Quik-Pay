@@ -1,4 +1,4 @@
-const { User } = require("../db/db");
+const { User, Account } = require("../db/db");
 const { signupData, signinData, updateData } = require("../utils/types");
 const { hashedPwd, matchPassword } = require("../utils/pwdUtils");
 
@@ -31,7 +31,12 @@ router.post("/signup", async (req, res) => {
       password: await hashedPwd(password),
     });
     const userId = user._id;
+    await Account.create({
+        userId,
+        balance:1 + Math.random() * 100000
+    })
     const token = generateToken({ userId });
+
     res.status(200).json({
       message: "User created successfully",
       token,
